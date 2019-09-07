@@ -1,0 +1,4 @@
+1. all keywords loops like if, else, while , def ends with :
+2. all functions system or user defined are function() like print(),writelines(),append(),strip()
+3. print(f"the value{value}") in which f means subsitituing the valus of the variable.
+4. enter witout any value considered as false like prompt = False (if entered without value)
