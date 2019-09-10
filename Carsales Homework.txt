@@ -1,0 +1,48 @@
+Patch EC2 instance using Ansible, depends on the application priority.
+
+
+the new “AWS-RunAnsiblePlaybook” public document. This document runs Ansible locally on your instances.
+
+
+- hosts: all
+    become: true
+
+    tasks:
+    - name: gather ec2 facts
+      action: ec2_facts
+
+    - name: install apache on redhat or centos instances
+      yum: name="kernel" state=latest
+      when: ansible_os_family == "RedHat"
+
+    - name: install apache on debian or ubuntu instances
+      apt: name=apache2 state=present
+      when: ansible_os_family == "Debian"
+
+    - name: enable apache on startup and start service for redhat or centos
+      service: name=httpd enabled=yes state=restarted
+      when: ansible_os_family == "RedHat" and "tag:AppType" == "NonCritical"
+    - name: enable apache on startup and start service for debian or ubuntu
+      service: name=apache2 enabled=yes state=present
+      when: ansible_os_family == "Debian" and "tag:AppType" == "Critical"
+
+    - name: Reboot the critical application during non business hours.
+      
+
+
+Change for patching, linux, windows, schedule reboot based on tags or ssm
+
+# Gather facts about any instance with a tag key Name and value Example
+- ec2_instance_facts:
+    filters:
+      "tag:Name": Example
+
+# Gather facts about all instances in AZ ap-southeast-2a
+- ec2_instance_facts:
+    filters:
+      availability-zone: ap-southeast-2a
+
+https://www.infinitypp.com/ansible/aws-systems-manager-playbook/
+https://www.techinformant.in/patching-for-multiple-linux-servers-using-ansible/ 
+
+use when condition using filter and tags
